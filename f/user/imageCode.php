@@ -1,12 +1,12 @@
 <?php
-$imgwidth = 82; //图片宽度
+$imgwidth = 66; //图片宽度
 $imgheight = 28; //图片高度
 $codelen = 4; //验证码长度
-$fontsize = 18; //字体大小
-$charset = 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXYZ23456789';
-$font = __DIR__ . '/fonts/angryblue.TTF';//curlzmt.otf
+$fontsize = 22; //字体大小
+$charset = 'ABCDEFGHKMNPRSTUVWXYZ23456789';
+$font = __DIR__ . '/fonts/AyumiBold-Italic.otf';//curlzmt.otf//angryblue.TTF
 
-ob_clean();
+ob_clean();//防止服务器缓存
 header("content-type:image/PNG");
 
 $im = imagecreatetruecolor($imgwidth, $imgheight);
@@ -35,7 +35,7 @@ for($i = 0; $i < $codelen; $i++) {
 }
 
 $_x = intval($imgwidth/$codelen); //计算字符距离
-$_y = intval($imgheight*0.7); //字符显示在图片70%的位置
+$_y = intval($imgheight*0.9); //字符显示在图片70%的位置
 for($i = 0; $i < strlen($codeStr); $i++) {
     $randcolor = imagecolorallocate($im, mt_rand(0,150), mt_rand(0,150), mt_rand(0,150));
     imagettftext($im, $fontsize, mt_rand(-30,30), $i*$_x+3, $_y, $randcolor, $font, $codeStr[$i]);

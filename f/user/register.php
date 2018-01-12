@@ -74,7 +74,7 @@ function checkEmail() {
     hideAlert();
     var email = $("#email").val();
     if (email && validEmail()) {
-        $.get("<?php echo WEB_ROOT;?>User/checkEmail?email=" + email, function(data, status) {
+        $.get("<?php echo FUNCTREE_WEB_ROOT;?>User/check?cmd=checkEmail&email=" + email, function(data, status) {
             var result = eval("("+data+")");
             if (result.success) {
                 emailExist = false;
@@ -96,7 +96,7 @@ function checkName() {
     hideAlert();
     var name = $("#name").val();
     if (validName()) {
-        $.get("<?php echo WEB_ROOT;?>User/checkName?name=" + name, function(data, status) {
+        $.get("<?php echo FUNCTREE_WEB_ROOT;?>User/check?cmd=checkName&name=" + name, function(data, status) {
             var result = eval("("+data+")");
             if (result.success) {
                 nameExist = false;
@@ -134,7 +134,7 @@ $(function(){
             return false;
         }
         $('#popModal').modal({backdrop: 'static', keyboard: false});
-        $.get("<?php echo WEB_ROOT;?>User/emailCode?email=" + email, function(data, status) {
+        $.get("<?php echo FUNCTREE_WEB_ROOT;?>User/emailCode?email=" + email, function(data, status) {
             $('#popModal').modal('hide');
             var result = eval("("+data+")");
             if (result.success) {
@@ -162,7 +162,7 @@ $(function(){
 </script>
     <div class="row text-center">
         <div>
-            <img src="<?php echo WEB_ROOT.FUNC_PATH;?>user/images/logo.png" width="48" height="48" style="margin-top:30px">
+            <img src="<?php echo FUNCTREE_WEB_ROOT.FUNCTREE_FUNC_PATH;?>user/images/logo.png" width="48" height="48" style="margin-top:30px">
         </div>
         <div style="margin-bottom:30px;margin-top:30px">
             <h4>用户注册</h4>
@@ -172,7 +172,7 @@ $(function(){
         <div class="col-xs-1 col-md-4">
         </div>
         <div class="col-xs-10 col-md-4">
-            <form class="form-horizontal" name="registerForm" method="post" action="<?php echo WEB_ROOT;?>User/register2">
+            <form class="form-horizontal" name="registerForm" method="post" action="<?php echo FUNCTREE_WEB_ROOT;?>User/register2">
             <input type="hidden" name="cmd" value="register">
                 <div id="userEmail" class="form-group">
                     <div>
@@ -215,7 +215,7 @@ $(function(){
 <div id="popModal" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
   <div class="modal-dialog modal-sm" role="document">
     <div class="modal-content text-center" style="padding:10px">
-      <img alt="" src="<?php echo WEB_ROOT.FUNC_PATH;?>user/images/loading.gif"> 请稍等......
+      <img alt="" src="<?php echo FUNCTREE_WEB_ROOT.FUNCTREE_FUNC_PATH;?>user/images/loading.gif"> 请稍等......
     </div>
   </div>
 </div>

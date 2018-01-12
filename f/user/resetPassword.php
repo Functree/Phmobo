@@ -65,14 +65,14 @@ function checkSubmit() {
 </script>
     <div class="row text-center">
         <div>
-            <img src="<?php echo WEB_ROOT.FUNC_PATH;?>user/images/logo.png" style="margin-top:30px;margin-bottom:30px">
+            <img src="<?php echo FUNCTREE_WEB_ROOT.FUNCTREE_FUNC_PATH;?>user/images/logo.png" style="margin-top:30px;margin-bottom:30px">
         </div>
     </div>
     <div class="row">
         <div class="col-xs-1 col-md-4">
         </div>
         <div class="col-xs-10 col-md-4">
-            <form class="form-horizontal" name="resetForm" method="post" action="<?php echo WEB_ROOT;?>User/resetPassword2" onsubmit="javascript: return checkSubmit()">
+            <form class="form-horizontal" name="resetForm" method="post" action="<?php echo FUNCTREE_WEB_ROOT;?>User/resetPassword2" onsubmit="javascript: return checkSubmit()">
             <input type="hidden" name="cmd" value="resetPasswordComplete">
             <input type="hidden" name="userId" value="<?php echo $userId;?>">
             <input type="hidden" name="token" value="<?php echo $token;?>">

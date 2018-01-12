@@ -1,25 +1,27 @@
 <?php
 require_once(__DIR__ . '/phplib/UserUtil.php');
-$cmd = $_POST["cmd"];
-$email = $_POST["email"];
-$password = $_POST["password"];
-$name = $_POST["name"];
-$emailCode = $_POST["emailCode"];
-if (isset($email) && isset($password) && isset($name) && isset($emailCode)) {
+if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["name"]) && isset($_POST["emailCode"])) {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+    $name = $_POST["name"];
+    $emailCode = $_POST["emailCode"];
     if (strtolower($emailCode) == $_SESSION["emailCode"]) {
         unset($_SESSION["emailCode"]);
         $userGroup = "1";//用户分组
         date_default_timezone_set('PRC');
         $addTime = date("Y-m-d H:i:s", time());
+        //增加新用户
         $userId = UserUtil::a($email, UserUtil::md5Password($password), $name, $userGroup, $addTime);
         if ($userId != null) {
+            //给新用户分配“用户默认角色”
+            UserUtil::a_UserToRole($userId, FUNCTREE_USER_ROLE_DEFAULT_ID);
             ?>
             <div align="center">注册成功，请登录。</div>
             <script type="text/javascript">
             <!--
             setTimeout("toLogin()", 3000);
             function toLogin() {
-                location.href = "<?php echo WEB_ROOT;?>User/login";
+                location.href = "<?php echo FUNCTREE_WEB_ROOT;?>User/login";
             }
             //-->
             </script>

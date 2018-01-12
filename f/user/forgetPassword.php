@@ -47,7 +47,7 @@ function checkForm() {
 }
 function updateCodeImage()
 {
-    document.getElementById("codeImage").src = '<?php echo WEB_ROOT;?>User/imageCode?d='+Math.random();
+    document.getElementById("codeImage").src = '<?php echo FUNCTREE_WEB_ROOT;?>User/imageCode?d='+Math.random();
 }
 $(function(){
     updateCodeImage();
@@ -56,14 +56,14 @@ $(function(){
 </script>
     <div class="row text-center">
         <div>
-            <img src="<?php echo WEB_ROOT.FUNC_PATH;?>user/images/logo.png" style="margin-top:30px;margin-bottom:30px">
+            <img src="<?php echo FUNCTREE_WEB_ROOT.FUNCTREE_FUNC_PATH;?>user/images/logo.png" style="margin-top:30px;margin-bottom:30px">
         </div>
     </div>
     <div class="row">
         <div class="col-xs-1 col-md-4">
         </div>
         <div class="col-xs-10 col-md-4">
-            <form class="form-horizontal" name="resetForm" method="post" action="<?php echo WEB_ROOT;?>User/forgetPassword2" onsubmit="javascript: return checkForm();">
+            <form class="form-horizontal" name="resetForm" method="post" action="<?php echo FUNCTREE_WEB_ROOT;?>User/forgetPassword2" onsubmit="javascript: return checkForm();">
             <input type="hidden" name="cmd" value="resetPasswordSend">
                 <div class="form-group">
                     <div>

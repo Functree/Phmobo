@@ -1,5 +1,7 @@
 <?php
 Class FunctreeUtil {
+    //缓存ID列表
+    static $cacheIdArray = array('funcList' => 1, 'permissionList' => 2);
     /**
      * 保存缓存数据
      * @param mixed $data 需要缓存的数据
@@ -7,20 +9,20 @@ Class FunctreeUtil {
      * @param int $timeout 缓存过期时间，单位：秒
      * @return number|boolean 保存失败返回false，否则返回数据size
      */
-    function save_cache($data, $name, $timeout) {
+    static public function saveCache($data, $name, $timeout) {
         // delete cache
-        @$id=shmop_open($this->get_cache_id($name), "a", 0, 0);
+        @$id=shmop_open(self::getCacheId($name), "a", 0, 0);
         if ($id) {
             shmop_delete($id);
             shmop_close($id);
         }
         
         // get id for name of cache
-        $id=shmop_open($this->get_cache_id($name), "c", 0644, strlen(serialize($data)));
+        $id=shmop_open(self::getCacheId($name), "c", 0644, strlen(serialize($data)));
         
         // return int for data size or boolean false for fail
         if ($id) {
-            $this->set_timeout($name, $timeout);
+            self::setTimeout($name, $timeout);
             return shmop_write($id, serialize($data), 0);
         }
         else return false;
@@ -30,10 +32,9 @@ Class FunctreeUtil {
      * @param string $name 缓存数据标识名称，目前为funcList、permissionList
      * @return boolean|mixed 缓存数据不存在时返回false，否则返回数据内容
      */
-    function get_cache($name) {
-        if (!$this->check_timeout($name)) {
-            @$id=shmop_open($this->get_cache_id($name), "a", 0, 0);
-            
+    static public function getCache($name) {
+        if (!self::checkTimeout($name)) {
+            @$id=shmop_open(self::getCacheId($name), "a", 0, 0);
             if ($id) $data=unserialize(shmop_read($id, 0, shmop_size($id)));
             else return false;          // failed to load data
             
@@ -46,20 +47,16 @@ Class FunctreeUtil {
         else return false;              // data was expired
     }
     /**
-     * 删除缓存数据
+     * 删除所有缓存数据
      * @param string $name 缓存数据标识名称，目前为funcList、permissionList
-     * @return boolean|mixed 缓存数据不存在时返回false，否则返回数据内容
      */
-    function delete_cache() {
-        @$id=shmop_open($this->get_cache_id('funcList'), "a", 0, 0);
-        if ($id) {
-            shmop_delete($id);
-            shmop_close($id);
-        }
-        @$id=shmop_open($this->get_cache_id('permissionList'), "a", 0, 0);
-        if ($id) {
-            shmop_delete($id);
-            shmop_close($id);
+    static public function deleteCache() {
+        foreach (self::$cacheIdArray as $cacheName=>$cacheId) {
+            @$id=shmop_open($cacheId, "a", 0, 0);
+            if ($id) {
+                shmop_delete($id);
+                shmop_close($id);
+            }
         }
         @$id=shmop_open(100, "a", 0, 0);
         if ($id) {
@@ -67,14 +64,15 @@ Class FunctreeUtil {
             shmop_close($id);
         }
     }
-    //目前为funcList、permissionList
-    private function get_cache_id($name) {
-        // maintain list of caches here
-        $id=array('funcList' => 1, 'permissionList' => 2);
-        
-        return $id[$name];
+    /**
+     * 根据名称获取缓存ID
+     * @param string $name 缓存名称，目前为funcList、permissionList
+     * @return number 返回缓存ID
+     */
+    static private function getCacheId($name) {
+        return self::$cacheIdArray[$name];
     }
-    private function set_timeout($name, $int) {
+    static private function setTimeout($name, $int) {
         $timeout=new DateTime(date('Y-m-d H:i:s'));
         date_add($timeout, date_interval_create_from_date_string("$int seconds"));
         $timeout=date_format($timeout, 'YmdHis');
@@ -91,7 +89,7 @@ Class FunctreeUtil {
         $id=shmop_open(100, "c", 0644, strlen(serialize($tl)));
         shmop_write($id, serialize($tl), 0);
     }
-    private function check_timeout($name) {
+    static private function checkTimeout($name) {
         $now=new DateTime(date('Y-m-d H:i:s'));
         $now=date_format($now, 'YmdHis');
         
@@ -116,16 +114,16 @@ Class FunctreeUtil {
      * @param string $visitMethodName 访问功件的方法名称
      * @return boolean 解析成功返回true
      */
-    function parse_uri( $uri_string, &$visitFuncName, &$visitMethodName )
+    static public function parseUri( $uri_string, &$visitFuncName, &$visitMethodName )
     {
         $visitFuncName = "";
         $visitMethodName = "";
         if ( $uri_string != "" AND $uri_string != "/" )
         {
-            $uri_string = $this->valid_uri_str( $uri_string );
+            $uri_string = self::validUriStr( $uri_string );
             $uri_string = str_replace( '/index.php', '', $uri_string );
-            $uri_string = $this->remove_left_slash( $uri_string );
-            $uri_string = $this->remove_right_slash( $uri_string );
+            $uri_string = self::removeLeftSlash( $uri_string );
+            $uri_string = self::removeRightSlash( $uri_string );
             
             $array_tmp = explode( "/", $uri_string );
             if ( is_array($array_tmp) )
@@ -144,7 +142,15 @@ Class FunctreeUtil {
         {
             foreach($_POST as $key => $val)
             {
-                $_POST[$this->valid_input_key($key)] = $this->valid_input_data($val);
+                $_POST[self::validInputKey($key)] = self::validInputData($val);
+            }
+        }
+        // Clean $_GET Data
+        if (is_array($_GET) AND count($_GET) > 0)
+        {
+            foreach($_GET as $key => $val)
+            {
+                $_POST[self::validInputKey($key)] = self::validInputData($val);
             }
         }
         
@@ -155,7 +161,7 @@ Class FunctreeUtil {
      * @param string $ignoreStr 需要忽略的字符串
      * @return string 返回Http访问的URI字符串
      */
-    function get_uri_string( $ignoreStr )
+    static public function getUriString( $ignoreStr )
     {
         $path = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : @getenv('REQUEST_URI');
         if ( $path != '' AND !strrpos($path, "/index.php") )
@@ -173,7 +179,7 @@ Class FunctreeUtil {
      * 显示提示信息
      * @param string $errmessage 需要显示的信息
      */
-    function show_message( $errmessage )
+    static public function showMessage( $errmessage )
     {
         echo "<div style='width:100%;text-align:center'>$errmessage</div>";
         exit;
@@ -183,11 +189,11 @@ Class FunctreeUtil {
      * @param string $str 需要处理的字符串
      * @return string 返回处理完成后的字符串
      */
-    function remove_left_slash( $str )
+    static public function removeLeftSlash( $str )
     {
         if ( substr($str,0,1) == "/" ){
             $str = substr( $str, 1 );
-            $str = $this->remove_left_slash( $str );
+            $str = self::removeLeftSlash( $str );
         }
         
         return $str;
@@ -197,33 +203,33 @@ Class FunctreeUtil {
      * @param string $str 需要处理的字符串
      * @return string 返回处理完成后的字符串
      */
-    function remove_right_slash( $str )
+    static public function removeRightSlash( $str )
     {
         if ( substr($str,-1) == "/" ){
             $str = substr( $str, 0, strlen($str)-1 );
-            $str = $this->remove_right_slash( $str );
+            $str = self::removeRightSlash( $str );
         }
         
         return $str;
     }
-    private function valid_uri_str( $str )
+    static private function validUriStr( $str )
     {
         $str = str_replace( " ", "", $str );
         if ( ! preg_match("/^[A-Za-z0-9_\/-]*$/", $str) )
         {
-            $this->show_message( '包含非法字符，只允许“A-Za-z0-9_/-”等字符。' );
+            self::showMessage( '包含非法字符，只允许“A-Za-z0-9_/-”等字符。' );
         }
         
         return $str;
     }
-    private function valid_input_data( $str )
+    static private function validInputData( $str )
     {
         if (is_array( $str) )
         {
             $new_array = array();
             foreach ( $str as $key => $val )
             {
-                $new_array[$this->valid_input_key($key)] = $this->valid_input_data($val);
+                $new_array[self::validInputKey($key)] = self::validInputData($val);
             }
             return $new_array;
         }
@@ -235,11 +241,11 @@ Class FunctreeUtil {
         
         return $str;
     }
-    private function valid_input_key( $str )
+    static private function validInputKey( $str )
     {
         if ( ! preg_match("/^[a-z0-9:_\/-]+$/i", $str) )
         {
-            $this->show_message( '包含非法字符，只允许“a-z0-9:_/-”字符。' );
+            self::showMessage( '包含非法字符，只允许“a-z0-9:_/-”字符。' );
         }
         
         return $str;

@@ -18,7 +18,7 @@ if (isset($_POST["userId"]) && isset($_POST["token"]) && isset($_POST["password"
             alert("重置密码成功，将返回网站首页。");
             setTimeout("toHome()", 100);
             function toHome() {
-                location.href = "<?php echo WEB_ROOT;?>";
+                location.href = "<?php echo FUNCTREE_WEB_ROOT;?>";
             }
             //-->
             </script>

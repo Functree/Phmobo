@@ -2,8 +2,8 @@
 require_once(__DIR__ . '/phplib/UserUtil.php');
 if (isset($_GET["userId"])) {
     $userId = $_GET["userId"];
-    $document = UserUtil::b_one( [ 'id' => $userId ] );
-    if ($document == null) {
+    $user = UserUtil::b_one( [ 'id' => $userId ] );
+    if ($user == null) {
     ?>
     <div align="center">用户信息不存在。</div>
     <?php
@@ -25,13 +25,13 @@ if (isset($_GET["userId"])) {
           <div class="form-group">
             <label class="col-sm-2 control-label"><span>会员名号：</span></label>
             <div class="col-sm-4">
-              <p class="form-control-static"><?php echo $document["name"];?></p>
+              <p class="form-control-static"><?php echo $user["name"];?></p>
             </div>
           </div>
         </form>
         <script>
         function changeUserPhoto() {
-            $("#userPhoto").attr("src", "<?php echo WEB_ROOT;?>User/photo?userId=<?php echo $userId;?>&ct="+new Date());
+            $("#userPhoto").attr("src", "<?php echo FUNCTREE_WEB_ROOT;?>User/photo?userId=<?php echo $userId;?>&ct="+new Date());
         }
         $(document).ready(function() {
             changeUserPhoto();

@@ -4,7 +4,7 @@ $type = 'photo';
 if (isset($_GET["userId"])) {//如果存在$userId，则是获取用户的头像信息
     $userId = $_GET["userId"];
     ob_clean();
-    $document = UserUtil::b_one_userImage( [ 'userId' => $userId, 'type' => $type ], [ 'projection' => [ 'suffix' => 1, 'image' => 1 ] ] );
+    $document = UserUtil::b_one_UserImage( [ 'userId' => $userId, 'type' => $type ], [ 'projection' => [ 'suffix' => 1, 'image' => 1 ] ] );
     if ($document != null) {
         $suffix = strtolower($document["suffix"]);
         $image = $document["image"];
@@ -24,7 +24,7 @@ if (isset($_GET["userId"])) {//如果存在$userId，则是获取用户的头像
         //             header("Content-Type: image/png");
         //             echo $img;
         //             exit;
-        //header('Location: '.WEB_ROOT.FUNC_PATH."user/images/userDefaultPhoto.png");
+        //header('Location: '.FUNCTREE_WEB_ROOT.FUNCTREE_FUNC_PATH."user/images/userDefaultPhoto.png");
         $filename = __DIR__ . "/images/userDefaultPhoto.png";
         $size = getimagesize($filename); //获取mime信息
         $fp = fopen($filename, "rb"); //二进制方式打开文件
@@ -36,18 +36,18 @@ if (isset($_GET["userId"])) {//如果存在$userId，则是获取用户的头像
     }
 } else {//否则是保存用户头像
     //用户必须已经登录才能保存头像
-    if (isset($_SESSION["loginUserId"])) {
-        $userId = $_SESSION["loginUserId"];
+    if (isset($_SESSION["authUserId"])) {
+        $userId = $_SESSION["authUserId"];
         $imgName = $_FILES['file0']['name'];
         $suffix = substr($imgName, strpos($imgName, ".") + 1);
         $image = file_get_contents($_FILES['file0']['tmp_name']);
         $image = base64_encode($image);
-        $count = UserUtil::b_count_userImage(['userId' => $userId, 'type' => $type ]);
+        $count = UserUtil::b_count_UserImage(['userId' => $userId, 'type' => $type ]);
         $success = false;
         if ($count > 0) {
-            $success = UserUtil::c_one_userImage( [ 'userId' => $userId, 'type' => $type ], [ 'suffix' => $suffix, 'image' => $image ] );
+            $success = UserUtil::c_one_UserImage( [ 'userId' => $userId, 'type' => $type ], [ 'suffix' => $suffix, 'image' => $image ] );
         } else {
-            $success = UserUtil::a_userImage($userId, $type, $suffix, $image);
+            $success = UserUtil::a_UserImage($userId, $type, $suffix, $image);
         }
         if ($success) {
         ?>

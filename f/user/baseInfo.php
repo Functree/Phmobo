@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . '/phplib/UserUtil.php');
-$userId = $_SESSION["loginUserId"];
+$userId = $_SESSION["authUserId"];
 $document = UserUtil::b_one( [ 'id' => $userId ] );
 if ($document == null) {
     ?>
@@ -9,7 +9,7 @@ if ($document == null) {
 } else {
     ?>
     <div class="alert alert-info">请完善以下信息，方便我们更好的为您服务</div>
-    <form name="basicInfo" class="form-horizontal" method="post" action="<?php echo WEB_ROOT;?>User/baseInfo2">
+    <form name="basicInfo" class="form-horizontal" method="post" action="<?php echo FUNCTREE_WEB_ROOT;?>User/baseInfo2">
     <input type="hidden" name="cmd" value="update">
     <div class="console-title">
     <h5>基本信息</h5>
@@ -75,14 +75,14 @@ if ($document == null) {
         }
     }
     function submitForm(file) {
-        var form = $('<form method="post" enctype="multipart/form-data" action="<?php echo WEB_ROOT;?>User/photo" target="hiddenFrame"></form>');
+        var form = $('<form method="post" enctype="multipart/form-data" action="<?php echo FUNCTREE_WEB_ROOT;?>User/photo" target="hiddenFrame"></form>');
         form.append(file);
         form.appendTo("body");
         form.css('display','none');
         form.submit();
     }
     function changeUserPhoto() {
-        $("#userPhoto").attr("src", "<?php echo WEB_ROOT;?>User/photo?userId=<?php echo $userId;?>&ct="+new Date());
+        $("#userPhoto").attr("src", "<?php echo FUNCTREE_WEB_ROOT;?>User/photo?userId=<?php echo $userId;?>&ct="+new Date());
     }
     $(document).ready(function() {
         changeUserPhoto();
