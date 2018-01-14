@@ -24,7 +24,8 @@ if (!$funcList) {
     //实现功件发现机制，仅执行一次，遍历功件所在目录：f目录，获取功件名称并缓存到FUNCTREE_FUNC_LIST
     foreach(scandir(FUNCTREE_FUNC_PATH) as $funcFileName)
     {
-        if($funcFileName=='.'||$funcFileName=='..') continue;
+        $dotPos = strpos($funcFileName, ".");
+        if(!$dotPos || $dotPos == 0) continue;
         //功件主文件名称后缀必须为".php"
         $suffix = substr($funcFileName, strrpos($funcFileName, '.'));
         if(!is_dir(FUNCTREE_FUNC_PATH.$funcFileName) && $suffix == '.php')
