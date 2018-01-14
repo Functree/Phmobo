@@ -68,6 +68,7 @@ if (!$permissionList) {
     if (!empty($permissionList)) {
         FunctreeUtil::saveCache($permissionList, "permissionList", 24*3600);
     }
+    defined('FUNCTREE_PERMISSION_LIST') or define( 'FUNCTREE_PERMISSION_LIST', $permissionList );
     //如果用户功件存在
     if ($userFuncExist) {
         //仅执行一次注册“系统管理员”账号，并分配其“系统管理员角色”
