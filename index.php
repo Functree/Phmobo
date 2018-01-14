@@ -27,7 +27,7 @@ if (!$funcList) {
         $dotPos = strpos($funcFileName, ".");
         if(!$dotPos || $dotPos == 0) continue;
         //功件主文件名称后缀必须为".php"
-        $suffix = substr($funcFileName, strrpos($funcFileName, '.'));
+        $suffix = substr($funcFileName, $dotPos);
         if(!is_dir(FUNCTREE_FUNC_PATH.$funcFileName) && $suffix == '.php')
         {
             //功件主文件名称，即为功件类名称
